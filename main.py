@@ -77,6 +77,7 @@ history = modelo.fit(
 )
 print("Modelo entrenado!");
 
+# predicción de prueba
 imagen = X_pruebas[2]
 number = imagen
 number = np.array([number])
@@ -92,11 +93,13 @@ plt.imshow(imagen, cmap=plt.cm.binary)
 print("Predicción: " + class_names[np.argmax(prediccion[0])])
 plt.show()
 
+# imagenes alteradas
 for i in range(9):
-    number = X_pruebas[i]
+    imagen = data_gen_entrenamiento[0][0][i+i]
+    number = imagen
     number = np.array([number])
     plt.subplot(330 + 1 + i)
-    plt.imshow(X_pruebas[i], cmap=plt.get_cmap('gray'))
+    plt.imshow(imagen, cmap=plt.get_cmap('gray'))
     prediccion = modelo.predict(number)
     plt.ylabel(class_names[np.argmax(prediccion[0])])
 plt.show()
