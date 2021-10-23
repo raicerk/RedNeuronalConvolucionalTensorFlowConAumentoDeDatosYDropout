@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 
 from tensorflow.keras.datasets import mnist
 from tensorflow.keras.utils import to_categorical
@@ -57,7 +58,7 @@ modelo = tf.keras.models.Sequential([
 ])
 
 #Compilación
-modelo.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+modelo.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy', 'mae', 'mse'])
 
 #Los datos para entrenar saldran del datagen, de manera que sean generados con las transformaciones que indicamos
 data_gen_entrenamiento = datagen.flow(X_entrenamiento, Y_entrenamiento, batch_size=32)
@@ -76,6 +77,44 @@ history = modelo.fit(
     validation_steps=int(np.ceil(10000 / float(TAMANO_LOTE)))
 )
 print("Modelo entrenado!");
+
+def plot_history(history):
+  hist = pd.DataFrame(history.history)
+  hist['epoch'] = history.epoch
+
+  plt.figure()
+  plt.xlabel('Epoca')
+  plt.ylabel('Mean Abs Error [MPG]')
+  plt.plot(hist['epoch'], hist['mae'], label='Train Error')
+  plt.plot(hist['epoch'], hist['val_mae'], label = 'Val Error')
+  plt.legend()
+
+  plt.figure()
+  plt.xlabel('Epoca')
+  plt.ylabel('Mean Square Error [$MPG^2$]')
+  plt.plot(hist['epoch'], hist['mse'], label='Train Error')
+  plt.plot(hist['epoch'], hist['val_mse'], label = 'Val Error')
+  plt.legend()
+    
+  plt.figure()
+  plt.xlabel('Epoca')
+  plt.ylabel('Mean Square Error [$MPG^2$]')
+  plt.plot(hist['epoch'], hist['accuracy'], label='Train Error')
+  plt.plot(hist['epoch'], hist['val_accuracy'], label = 'Val Error')
+  plt.legend()
+    
+  plt.figure()
+  plt.xlabel('Epoca')
+  plt.ylabel('Magnitud de pérdida')
+  plt.plot(hist['epoch'], hist['loss'], label='Pérdida')
+  plt.plot(hist['epoch'], hist['val_loss'], label = 'Val pérdida')
+  plt.legend()
+  
+  plt.show()
+
+# Visor del entrenamiento
+plot_history(history)
+
 
 # predicción de prueba
 imagen = X_pruebas[2]
